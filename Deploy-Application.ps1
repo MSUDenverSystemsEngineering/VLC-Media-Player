@@ -149,8 +149,8 @@ Try {
 		## <Perform Post-Installation tasks here>
 		New-Folder -Path "$envProgramData\VLC"
 		Copy-File -Path "$dirSupportFiles\*.*" -Destination "$envProgramData\VLC"
-		New-Shortcut -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\VLC Media Player.lnk" -TargetPath "$envProgramFilesX86\VideoLAN\VLC\vlc.exe" -Arguments "--no-qt-privacy-ask --no-qt-updates-notif" -IconLocation "$envProgramFilesX86\VideoLAN\VLC\vlc.exe" -Description 'VLC Media Player'
-		Remove-Folder -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\VideoLAN"
+		New-Shortcut -Path "$envCommonStartMenuPrograms\VLC Media Player.lnk" -TargetPath "$envProgramFilesX86\VideoLAN\VLC\vlc.exe" -Arguments "--no-qt-privacy-ask --no-qt-updates-notif" -IconLocation "$envProgramFilesX86\VideoLAN\VLC\vlc.exe" -Description 'VLC Media Player'
+		Remove-Folder -Path "$envCommonStartMenuPrograms\VideoLAN"
 		Remove-File -Path "$envCommonDesktop\VLC media player.lnk"
 
 		## Display a message at the end of the install
@@ -185,9 +185,9 @@ Try {
 
 		# <Perform Uninstallation tasks here>
 		Execute-Process -Path "$envProgramFiles\VideoLAN\VLC\uninstall.exe" -Parameters '/S /NCRC' -WindowStyle 'Hidden'
-		Remove-Folder -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\VideoLAN"
+		Remove-Folder -Path "$envCommonStartMenuPrograms\VideoLAN"
 		Remove-File -Path "$envCommonDesktop\VLC media player.lnk"
-		Remove-File -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\VLC Media Player.lnk"
+		Remove-File -Path "$envCommonStartMenuPrograms\VLC Media Player.lnk"
 
 
 		##*===============================================
