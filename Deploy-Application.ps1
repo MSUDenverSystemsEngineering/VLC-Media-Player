@@ -139,16 +139,7 @@ Try {
 		}
 
 		## <Perform Installation tasks here>
-		If ($envOSArchitecture -eq '64-bit') {
-			$exitCode = Execute-Process -Path "vlc-$appVersion-win32.exe" -Parameters "/S /L=1033 --no-qt-privacy-ask --no-qt-updates-notif" -WindowStyle 'Hidden' -PassThru -WaitForMsiExec
-			If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
-			$exitCode = Execute-Process -Path "vlc-$appVersion-win64.exe" -Parameters "/S /L=1033 --no-qt-privacy-ask --no-qt-updates-notif" -WindowStyle 'Hidden' -PassThru -WaitForMsiExec
-			New-Shortcut -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\VLC Media Player.lnk" -TargetPath "$envProgramFiles\VideoLAN\VLC\vlc.exe" -Arguments "--no-qt-privacy-ask --no-qt-updates-notif" -IconLocation "$envProgramFiles\VideoLAN\VLC\vlc.exe" -Description 'VLC Media Player'
-		}
-		If ($envOSArchitecture -eq '32-bit') {
-			$exitCode = Execute-Process -Path "vlc-$appVersion-win32.exe" -Parameters "/S /L=1033 --no-qt-privacy-ask --no-qt-updates-notif" -WindowStyle 'Hidden' -PassThru -WaitForMsiExec
-			New-Shortcut -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\VLC Media Player.lnk" -TargetPath "$envProgramFilesX86\VideoLAN\VLC\vlc.exe" -Arguments "--no-qt-privacy-ask --no-qt-updates-notif" -IconLocation "$envProgramFilesX86\VideoLAN\VLC\vlc.exe" -Description 'VLC Media Player'
-		}
+		$exitCode = Execute-Process -Path "vlc-$appVersion-win32.exe" -Parameters "/S /L=1033 --no-qt-privacy-ask --no-qt-updates-notif" -WindowStyle 'Hidden' -PassThru -WaitForMsiExec
 		If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
 
 		##*===============================================
@@ -162,7 +153,9 @@ Try {
 		#If (-not $useDefaultMsi) {Show-InstallationPrompt -Message "'$appVendor' '$appName' '$appVersion' has been sucessfully installed." -ButtonRightText 'OK' -Icon Information -NoWait}
 
 		New-Folder -Path "$envProgramData\VLC"
-		Copy-File -Path "$dirSupportFiles\*.*" -Destination "$envProgramData\VLC"
+		Copy-File -Path "$dirSupportFiles\vlc-qt-interface.ini" -Destination "$envProgramData\VLC"
+		Copy-File -Path "$dirSupportFiles\vlcrc" -Destination "$envProgramData\VLC"
+		New-Shortcut -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\VLC Media Player.lnk" -TargetPath "$envProgramFilesX86\VideoLAN\VLC\vlc.exe" -Arguments "--no-qt-privacy-ask --no-qt-updates-notif" -IconLocation "$envProgramFilesX86\VideoLAN\VLC\vlc.exe" -Description 'VLC Media Player'
 		Remove-Folder -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\VideoLAN"
 		Remove-File -Path "$envCommonDesktop\VLC media player.lnk"
 	}
@@ -237,8 +230,8 @@ Catch {
 # SIG # Begin signature block
 # MIIU4wYJKoZIhvcNAQcCoIIU1DCCFNACAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDoJO1IgKP4lnf8
-# 18H5fGcq1KlXza6/jUUVCCc+Fb0dL6CCD4cwggQUMIIC/KADAgECAgsEAAAAAAEv
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAyWUrGji9NA3+2
+# ubCTvKMd2YFosrAx12KwBBwY2PqVuKCCD4cwggQUMIIC/KADAgECAgsEAAAAAAEv
 # TuFS1zANBgkqhkiG9w0BAQUFADBXMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
 # YmFsU2lnbiBudi1zYTEQMA4GA1UECxMHUm9vdCBDQTEbMBkGA1UEAxMSR2xvYmFs
 # U2lnbiBSb290IENBMB4XDTExMDQxMzEwMDAwMFoXDTI4MDEyODEyMDAwMFowUjEL
@@ -325,26 +318,26 @@ Catch {
 # FgNlZHUxGTAXBgoJkiaJk/IsZAEZFgltc3VkZW52ZXIxFTATBgoJkiaJk/IsZAEZ
 # FgV3aW5hZDEZMBcGA1UEAxMQd2luYWQtVk1XQ0EwMS1DQQITfwAAACITuo77mvOv
 # 9AABAAAAIjANBglghkgBZQMEAgEFAKBmMBgGCisGAQQBgjcCAQwxCjAIoAKAAKEC
-# gAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwLwYJKoZIhvcNAQkEMSIEILl6
-# 6DrSYtTzvYsHXGGs4TLb3HXhWs4opPKoRtFtJkjnMA0GCSqGSIb3DQEBAQUABIIB
-# AG7hjZTFGjyVKglFNqGjYyeDti+NIUViUr+fDLEDPwr42osos0swh/4khSYAx2kQ
-# yS9rlr61cOwJIAtLCM3rN/vQPOOUVuxuWENUIbtRD1VsCT0mPaZu+9BiolZkqhXX
-# cMY6WgdWJv5ur/Y8MWIwlO+HtA0ludail+17N8EwH9BN1XSBlypoHB0narQW1tVT
-# xnStGrJx2IPRjBUocshklGqhiXqm7Z3Hp4RkoM2COC2oya4S44+9ywJYFK932boe
-# jG6IJbTTgWzMvObJX5SH/zyAGONxZvfzuDlTe3k+NhI6n0hzU+IAm0qNewYPYYwT
-# ZqMpLv3CFdagEm819DlyH1OhggKiMIICngYJKoZIhvcNAQkGMYICjzCCAosCAQEw
+# gAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwLwYJKoZIhvcNAQkEMSIEIAe4
+# JAhHQe+kSXMysB57LMRJlIc3SSFt1NRJZlSQNfpEMA0GCSqGSIb3DQEBAQUABIIB
+# AHo2YOnZAg/tz/1xuTdkfW2HW6G0JyGilsfASiILmttLQoCNXFjfZ4XT4c3fOQCt
+# c7jfWiZQUZGHJ0Q7tcsA2BYk/HeHcvEnkC9P7jXxWanmS0+WN9f/TpYVY1xBvgNW
+# Pjpr+dkSF3Xu1RkkBopL4tL4hDdyCTVxAt9Va+E+FFqBR3hp5u9QtFpCb0ViciSC
+# 1Hf6jyBSGbe//L8sQve6TKnoW/ogfuqZJ/AAzIZBopxMLm6HZoFtNiE98gaVlkHx
+# z9ICicqIHRyiL1TmF+ha8FRD2TxvJNA7qMV8OcMSMPrVzHGaUggBqFISczPhD1Mq
+# pUbH82LcVpwHO8BX3J9PSUKhggKiMIICngYJKoZIhvcNAQkGMYICjzCCAosCAQEw
 # aDBSMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEoMCYG
 # A1UEAxMfR2xvYmFsU2lnbiBUaW1lc3RhbXBpbmcgQ0EgLSBHMgISESHWmadklz7x
 # +EJ+6RnMU0EUMAkGBSsOAwIaBQCggf0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEH
-# ATAcBgkqhkiG9w0BCQUxDxcNMTgwMjE0MjIwNDMyWjAjBgkqhkiG9w0BCQQxFgQU
-# ppms53+UBp3kALV3ufUSVRzcg/gwgZ0GCyqGSIb3DQEJEAIMMYGNMIGKMIGHMIGE
+# ATAcBgkqhkiG9w0BCQUxDxcNMTgwMjE0MjIzNTAwWjAjBgkqhkiG9w0BCQQxFgQU
+# 04uCix8Spxx+2w8j7OW6q1FvUIYwgZ0GCyqGSIb3DQEJEAIMMYGNMIGKMIGHMIGE
 # BBRjuC+rYfWDkJaVBQsAJJxQKTPseTBsMFakVDBSMQswCQYDVQQGEwJCRTEZMBcG
 # A1UEChMQR2xvYmFsU2lnbiBudi1zYTEoMCYGA1UEAxMfR2xvYmFsU2lnbiBUaW1l
 # c3RhbXBpbmcgQ0EgLSBHMgISESHWmadklz7x+EJ+6RnMU0EUMA0GCSqGSIb3DQEB
-# AQUABIIBAH274OX6A+/h3Oa2R4PxElzHBmsLhlwhlR1mKkznFQsDhT4ThDchuzQk
-# 6TyNk9gz6SwUMEPC2TEdRUnXf4XQ+v7nxUlawRDgdtcqXrft34sgdjohAkQrNFt9
-# X6KK6EiPagpN9/J+LC16nHZi3Mh/r3AmAajGOjQSLjXu+emzKL/ibXGfDiqQ2fBd
-# G1Tk3NkqPfeXG1wQktEiPzJ4eJ3O0+Dq5iLSXxHlEJY0Vp/WVzW9zpEI7bFf6OOE
-# eFZeVk9Zdi38inizM0hf/uzIUjinJlDk6RaCjEizeGnY48WS9Q+V1kK9SQPpBdSG
-# cRqoWyIY8rh6TkTYSBYGCi70JL4vZwY=
+# AQUABIIBAIq/62HD+qekpNcc+5E25CvMu46nns7XKoobaLItaExSXuXBmiAdcAD7
+# AQRq7vrb3gQa1GiWQ/iy9MeWihgHFQhewolqh1yPA9RPYoqy85+Ih6okvYaASZNT
+# Bk/MPSJqf+pOJzaGpRPphCXf8jgx/N2agP7JaTxVD9Tbl6kN0YO9Wm70uZY4LOYy
+# KfCbnqFSA1vPNGcQvlrEGpQwz7PhM8x55JmsTPKAdaZQM7CtBQiRSGTruZe5kWbI
+# zz3OfZOG8AZZVhpUDL/9hqtk3Dbawph5YsXOs/lS2NhTdQK+hl7WmkxhX2TW8Otw
+# eDE8DpayLAdLeWwV81N6MTDsVpliKg0=
 # SIG # End signature block
